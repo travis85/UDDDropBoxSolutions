@@ -22,18 +22,40 @@ function samePatternPt1(pattern, input){ //count the number and compares
 
     return isSame(patternCounted, inputCounted)
 }
-console.log(samePatternPt1('abcabc', 'red blue green red blue green'))
-console.log(samePatternPt1('abba', 'red blue blue red'))
-console.log(samePatternPt1('abba', 'red blue green red'))
+// console.log(samePatternPt1('abcabc', 'red blue green red blue green'))
+// console.log(samePatternPt1('abba', 'red blue blue red'))
+// console.log(samePatternPt1('abba', 'red blue green red'))
 
 
 
-//whatever index[0] find that in string and push that charAt index array
-
+//split pattern if letter === letter group
+//keep splicing input
 function samePatternPt2(pattern, input){
-    // const patternSplit = pattern.split('');
-    // const inputSplit = input.split(' ')
+    let patternSplit = pattern.split('');
+    let inputSplit = input.split('')
 
+
+//use regex on every splice
+
+    let i = 0
+    let j = 1
+    let foundPattern = []
+
+    while(i < inputSplit.length){
+        let x = []
+        let pattern2 = inputSplit.splice(i,j)
+        let possiblePattern = new RegExp([pattern2.join('')])
+
+        if(!(input.match(possiblePattern))){
+            x.push(inputSplit[i],[j])
+        } else {
+            pattern2 = inputSplit.splice(i,j++)
+
+        }
+        foundPattern.push(x)
+    }
+
+    console.log(foundPattern)
 
     function countedIndex(currentString){
         let countedPattern = {};
@@ -47,32 +69,9 @@ function samePatternPt2(pattern, input){
         return countedPattern
     }
 
-    const patternCounted = Object.values(countedIndex(patternSplit))  
-    const inputCounted = Object.values(countedIndex(inputSplit))
-    const isSame = (a, b) => JSON.stringify(a) === JSON.stringify(b);
 
-    return 
 }
-// samePatternPt2()
+console.log(samePatternPt2('abcabc', 'redbluegreenredbluegreen'))
+console.log(samePatternPt2('abba', 'redbluebluered'))
+console.log(samePatternPt2('abba', 'redbluegreenred'))
 
-
-//substring
-//group by word or letter
-
-function recurse(string, input){
-    let x = input.split('')
-    // if(pattern.match(input)){
-    //     return true
-
-    // } else {
-    //     return false
-    // }
-
-console.log(x)
-}//x
-console.log(recurse('abba', 'blueredblue')) 
-
-//turn to Regex 
-//take string index[0] and see if its a match.
-//if it is add another letter and check again.
-//if its not push held letters into array

@@ -2,19 +2,25 @@ const fs = require ('fs');
 const listOfWords = fs.readFileSync('sowpods.txt', 'utf-8')
 const words = listOfWords.split('\n')
 
-
-
 function shift(foundLetter, num) {
     let original = foundLetter.charCodeAt(0)
     let charCode = foundLetter.charCodeAt(0) + num;
-    if (original <= 90 ){
-         if(charCode > 90){
-            charCode = charCode - 90 + 64
+    if(original > 64 && original < 123){
+        if (original <= 90 ){
+            if(charCode > 90){
+               charCode = charCode - 90 + 64
+           }
+       } else {
+           if(charCode > 122){
+            charCode = charCode - 122 + 96
+           }
+       }
+   
+    } else{
+        if (original < 65){
+            return String.fromCharCode(original)
         }
-    } else {
-        if(charCode > 122){
-         charCode = charCode - 122 + 96
-        }
+         
     }
     return String.fromCharCode(charCode)
 }
@@ -26,44 +32,37 @@ function rot(string, numOfShifts){
     }
     return shifted.join('')
 }
+console.log(rot('hello World',26))
 
-
-//   console.log(rot('hell0World',2))
-
-//map
+//shift until word is met 
 function decrypt(encrypted) {
-    let encryptedWords =  encrypted.toUpperCase().split(' ') //['JU', 'XBT', 'UIF',....]
-    let wordCounter = 0// count can not pass 11
-    let shiftCounter = 1;
-    let solution = []
+    let encryptedWords =  encrypted.toUpperCase()
 
-    let i = 0;
-    while (i < encryptedWords.length){
-        let word = encryptedWords[i]
-        let deciphered = rot(word, shiftCounter);
-
-        if(words.includes(deciphered)){ //this works now need to wrap in loop
-            solution.push(deciphered)
-            wordCounter++
-            i++
-            
-        } else {
-            
-            if(shiftCounter < 26 )
-            
-            shiftCounter++
-            i = 0
-            solution = []
-        }
-
+    function findLongestWord(str) {
+        str = str.split(" ")
+        return str.sort((a, b) => b.length - a.length)[0]
     }
-        
+    let longestWord = findLongestWord(encryptedWords) //wanted to find the longest word so that Itll give a accurate shift count on the smaller words
 
-    return [solution.join(' '), shiftCounter]
+    function oneWordDecrypt(oneWord){//determine the num of shifts
+        let numOfShifts = 0
+        while(numOfShifts < 27){
+            let decrypted = rot(oneWord, numOfShifts)
 
+            if(!(words.includes(decrypted))){
+                numOfShifts++
+            } else {
+                break
+            }
+        }
+        return numOfShifts
+    }
+    let shifts = oneWordDecrypt(longestWord)
+    // console.log(encrypted)
+    return rot(encrypted,shifts)
 }
 
-//console.log(decrypt("AA iugbu fgnknkl"))
-console.log(decrypt("Ju xbt uif cftu pg ujnft,  ju xbt uif xpstu pg ujnft"))
+console.log(decrypt("Ifmmp , Sjdl"))
+console.log(decrypt("Ju xbt uif cftu pg ujnft ,  ju xbt uif xpstu pg ujnft"))
 
 
